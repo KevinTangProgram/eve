@@ -1,5 +1,7 @@
 from cryptography.fernet import Fernet
 import matplotlib.image as mpimg
+import pydirectinput as pydirect
+from playsound import playsound
 from decimal import Decimal
 import pyautogui as py
 import numpy as np
@@ -11,12 +13,14 @@ import time
 import cv2
 import os
 
+party_size = 2
+
 def password():
 	password = ""
 	while (True):
 		try:
 			os.system('cls')
-			print("Eve Autopilot 2.0\n")
+			print("Eve Radar 2.0\n")
 			password = maskpass.advpass(prompt="Enter the password: ", mask="\u00B7") + "Adamastor"
 			if (hashlib.sha256(password.encode('utf-8')).hexdigest() == "559f1112003dcde49fb59dfee6d839c80344f58131861f22ac9763e9899996fa"):
 				break
@@ -28,16 +32,16 @@ def password():
 			maskpass.askpass(prompt="Eve Autopilot 2.0\n\nPress enter to try again.", mask="")
 
 	os.system('cls')
-	password += "Weathered"
-	password = hashlib.sha256(password.encode('utf-8')).hexdigest()
-	password = password[:-21] + '='
-	fernet = Fernet(password)
-	#print(fernet.decrypt(b'gAAAAABjGGaQxaEUEWXzYCuPmgYqJrN_rNervKZ7777nRCMkZeI00mf7daE6kem6WW3rvlWylnDzVs74oH1Ums3lh4U5cmBctLzOhf4M8CMAUkxvIkceEssagaIg__itvE4y7VL8KlCi').decode())
-	#print(fernet.decrypt(b'gAAAAABjGGa7MZ-BfCTy_lQEQJxxPfbFLfvNrJOa4etdPTxUr0ZxocG6qiuCSY1IuyOXbVGwJ9oB7doW0IikfVzDRfvnlKvcXwL5VO4IKkS44eo6GZmXbXw=').decode())
-	#print(fernet.decrypt(b'gAAAAABjGGSz0wzgZUtaISoUAhj-cVrA8HMyBEmvnS1INexXrFYTBLpo1QVSwIX1sfEMeXsyDdarYVO3v2DIdJqQWhJMoYxBbvxbz3NOi_xdqegahZPdybY=').decode())
-	#print(fernet.decrypt(b'gAAAAABjGGUKGDVT9jMaHZDI-Nvt3AYrrkGvlPI2Gp7acI3Vks_2qCZjGM0pLRkSnossQdvDIvV3Lhm1aTuvEeDC-bcHd4otkWUUquWaKn_WZWkO01jTngE=').decode())
-	#print(fernet.decrypt(b'gAAAAABjGGWKxWaZ4D42LVUvgHK3USxlP7nCQwtAPenEvUzPYXMInOM-z1XoHVfDIl-BYc1dyEyx09_XkPHnB3enBfD5Ip-CQDmQg7TsF6Vdpzbhy7IOGm-i0MKOINl5i63HwS160eog').decode())
-	#print(fernet.decrypt(b'gAAAAABjGGXGPMN2Rba1Y8e7KDkjEaCEr2--sIdK7B1WVLS4fCpbSuBEbGEDg-ny3qHqva5H3gDI41ZhSVlRPr1s3A82h_YmHeJoUg97iBp1qqzKhS5a3MBrHEF1L5h3eIuTJ0QCalBH').decode())
+	# password += "Weathered"
+	# password = hashlib.sha256(password.encode('utf-8')).hexdigest()
+	# password = password[:-21] + '='
+	# fernet = Fernet(password)
+	# print(fernet.decrypt(b'gAAAAABjGGaQxaEUEWXzYCuPmgYqJrN_rNervKZ7777nRCMkZeI00mf7daE6kem6WW3rvlWylnDzVs74oH1Ums3lh4U5cmBctLzOhf4M8CMAUkxvIkceEssagaIg__itvE4y7VL8KlCi').decode())
+	# print(fernet.decrypt(b'gAAAAABjGGa7MZ-BfCTy_lQEQJxxPfbFLfvNrJOa4etdPTxUr0ZxocG6qiuCSY1IuyOXbVGwJ9oB7doW0IikfVzDRfvnlKvcXwL5VO4IKkS44eo6GZmXbXw=').decode())
+	# print(fernet.decrypt(b'gAAAAABjGGSz0wzgZUtaISoUAhj-cVrA8HMyBEmvnS1INexXrFYTBLpo1QVSwIX1sfEMeXsyDdarYVO3v2DIdJqQWhJMoYxBbvxbz3NOi_xdqegahZPdybY=').decode())
+	# print(fernet.decrypt(b'gAAAAABjGGUKGDVT9jMaHZDI-Nvt3AYrrkGvlPI2Gp7acI3Vks_2qCZjGM0pLRkSnossQdvDIvV3Lhm1aTuvEeDC-bcHd4otkWUUquWaKn_WZWkO01jTngE=').decode())
+	# print(fernet.decrypt(b'gAAAAABjGGWKxWaZ4D42LVUvgHK3USxlP7nCQwtAPenEvUzPYXMInOM-z1XoHVfDIl-BYc1dyEyx09_XkPHnB3enBfD5Ip-CQDmQg7TsF6Vdpzbhy7IOGm-i0MKOINl5i63HwS160eog').decode())
+	# print(fernet.decrypt(b'gAAAAABjGGXGPMN2Rba1Y8e7KDkjEaCEr2--sIdK7B1WVLS4fCpbSuBEbGEDg-ny3qHqva5H3gDI41ZhSVlRPr1s3A82h_YmHeJoUg97iBp1qqzKhS5a3MBrHEF1L5h3eIuTJ0QCalBH').decode())
 	#print(fernet.decrypt(b'gAAAAABjGGY7yTCJJRMzPIRMawDAFRF-evMtC2ne6PmJ-Jf9aOya3GrXNYHY_C3PxWkKTmkB2tDRabKeplN-ATJMfBhS_HEMXVDGjfroMnklNZzgj065PTw=').decode())
 	exitCode = False
 	try:
@@ -76,20 +80,20 @@ def imageProcessor(picture):
 	return picture
 
 def checkInformation():
-	#screenshot = py.screenshot(region=(1580, 130, 100, 100))
-	screenshot = py.screenshot(region=(1650, 110, 20, 20))
-	screenshot.save('unprocessedInformation.png')
+	screenshot = py.screenshot(region=(1355, 700, 20, 300))
+	screenshot.save('unprocessedCarrot.png')
 	
-	information = mpimg.imread('unprocessedInformation.png')
-	mpimg.imsave("processedInformation.png", imageProcessor(information))
-	img_rgb = cv2.imread('processedInformation.png')
-	template = cv2.imread('i_symbol.png', 0)
+	information = mpimg.imread('unprocessedCarrot.png')
+	mpimg.imsave("processedCarrot.png", imageProcessor(information))
+	img_rgb = cv2.imread('processedCarrot.png')
+	template = cv2.imread('carrot_symbol.png', 0)
 	img_gray = cv2.cvtColor(img_rgb, cv2.COLOR_BGR2GRAY)
 	res = cv2.matchTemplate(img_gray,template,cv2.TM_CCOEFF_NORMED)
 	threshold = 0.9999
 	loc = np.where(res >= threshold)
 	lists = loc[1].tolist()
-	if (len(lists) > 0):
+	#print(len(lists))
+	if (len(lists) > party_size):
 		return True
 	return False
 
@@ -97,22 +101,23 @@ def main():
 	password()
 	startup()
 	while (True):
-		#get the current time in seconds
-		startTime = time.time()
-		while (checkInformation()):
-			if (time.time() - startTime > 60):
-				break
 		while (not checkInformation()):
-			if (time.time() - startTime > 60):
-				break
-		time.sleep(random.randint(3, 5))
-		py.click()
-
+			randomNum = random.gauss(2.32, 0.76)
+			if (randomNum < 0.5):
+				time.sleep(0.512)
+			else:
+				time.sleep(randomNum)
+			pydirect.press('v')
+		playsound('warning.mp3')
+		
+	
 def test():
 	startup()
 	if (checkInformation()):
 		print("True")
+		
 	startup()
 
-#main()
-test()
+main()
+#test()
+
