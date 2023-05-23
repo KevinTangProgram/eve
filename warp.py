@@ -28,10 +28,10 @@ def password():
 			maskpass.askpass(prompt="Eve Autopilot 2.0\n\nPress enter to try again.", mask="")
 
 	os.system('cls')
-	password += "Weathered"
-	password = hashlib.sha256(password.encode('utf-8')).hexdigest()
-	password = password[:-21] + '='
-	fernet = Fernet(password)
+	# password += "Weathered"
+	# password = hashlib.sha256(password.encode('utf-8')).hexdigest()
+	# password = password[:-21] + '='
+	# fernet = Fernet(password)
 	#print(fernet.decrypt(b'gAAAAABjGGaQxaEUEWXzYCuPmgYqJrN_rNervKZ7777nRCMkZeI00mf7daE6kem6WW3rvlWylnDzVs74oH1Ums3lh4U5cmBctLzOhf4M8CMAUkxvIkceEssagaIg__itvE4y7VL8KlCi').decode())
 	#print(fernet.decrypt(b'gAAAAABjGGa7MZ-BfCTy_lQEQJxxPfbFLfvNrJOa4etdPTxUr0ZxocG6qiuCSY1IuyOXbVGwJ9oB7doW0IikfVzDRfvnlKvcXwL5VO4IKkS44eo6GZmXbXw=').decode())
 	#print(fernet.decrypt(b'gAAAAABjGGSz0wzgZUtaISoUAhj-cVrA8HMyBEmvnS1INexXrFYTBLpo1QVSwIX1sfEMeXsyDdarYVO3v2DIdJqQWhJMoYxBbvxbz3NOi_xdqegahZPdybY=').decode())
@@ -76,7 +76,6 @@ def imageProcessor(picture):
 	return picture
 
 def checkInformation():
-	#screenshot = py.screenshot(region=(1580, 130, 100, 100))
 	screenshot = py.screenshot(region=(1650, 110, 20, 20))
 	screenshot.save('unprocessedInformation.png')
 	
@@ -84,6 +83,23 @@ def checkInformation():
 	mpimg.imsave("processedInformation.png", imageProcessor(information))
 	img_rgb = cv2.imread('processedInformation.png')
 	template = cv2.imread('i_symbol.png', 0)
+	img_gray = cv2.cvtColor(img_rgb, cv2.COLOR_BGR2GRAY)
+	res = cv2.matchTemplate(img_gray,template,cv2.TM_CCOEFF_NORMED)
+	threshold = 0.9999
+	loc = np.where(res >= threshold)
+	lists = loc[1].tolist()
+	if (len(lists) > 0):
+		return True
+	return False
+
+def checkDocking():
+	screenshot = py.screenshot(region=(1835, 255, 20, 20))
+	screenshot.save('unprocessedDots.png')
+	
+	information = mpimg.imread('unprocessedDots.png')
+	mpimg.imsave("processedDots.png", imageProcessor(information))
+	img_rgb = cv2.imread('processedDots.png')
+	template = cv2.imread('dots.png', 0)
 	img_gray = cv2.cvtColor(img_rgb, cv2.COLOR_BGR2GRAY)
 	res = cv2.matchTemplate(img_gray,template,cv2.TM_CCOEFF_NORMED)
 	threshold = 0.9999
@@ -105,14 +121,19 @@ def main():
 		while (not checkInformation()):
 			if (time.time() - startTime > 60):
 				break
-		time.sleep(random.randint(3, 5))
+		if (checkDocking()):
+			print("\n\nProgram terminated on", time.ctime(time.time()))
+			py.hotkey('alt', 'tab')
+			time.sleep(1)
+			break
+		time.sleep(random.gauss(5.23, 0.875))
 		py.click()
 
 def test():
 	startup()
-	if (checkInformation()):
+	if (checkDocking()):
 		print("True")
 	startup()
 
-#main()
-test()
+main()
+#test()

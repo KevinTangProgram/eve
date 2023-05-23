@@ -13,7 +13,9 @@ import time
 import cv2
 import os
 
-party_size = 2
+friendly = "00000"
+shipType = "11111"
+images = ["frigate_symbol.png", "destroyer_symbol.png", "cruiser_symbol.png", "battlecruiser_symbol.png", "battleship_symbol.png"]
 
 def password():
 	password = ""
@@ -43,6 +45,12 @@ def password():
 	# print(fernet.decrypt(b'gAAAAABjGGWKxWaZ4D42LVUvgHK3USxlP7nCQwtAPenEvUzPYXMInOM-z1XoHVfDIl-BYc1dyEyx09_XkPHnB3enBfD5Ip-CQDmQg7TsF6Vdpzbhy7IOGm-i0MKOINl5i63HwS160eog').decode())
 	# print(fernet.decrypt(b'gAAAAABjGGXGPMN2Rba1Y8e7KDkjEaCEr2--sIdK7B1WVLS4fCpbSuBEbGEDg-ny3qHqva5H3gDI41ZhSVlRPr1s3A82h_YmHeJoUg97iBp1qqzKhS5a3MBrHEF1L5h3eIuTJ0QCalBH').decode())
 	#print(fernet.decrypt(b'gAAAAABjGGY7yTCJJRMzPIRMawDAFRF-evMtC2ne6PmJ-Jf9aOya3GrXNYHY_C3PxWkKTmkB2tDRabKeplN-ATJMfBhS_HEMXVDGjfroMnklNZzgj065PTw=').decode())
+	friendly = input("Enter the number of friendly ships (frigate, destroyer, cruiser, battlecruiser, battleship): ")
+	shipType = input("Enter the type of ships to look for (frigate, destroyer, cruiser, battlecruiser, battleship): ")
+	if (len(friendly) != 5):
+		friendly = "00000"
+	if (len(shipType) != 5):
+		shipType = "11111"
 	exitCode = False
 	try:
 		key = maskpass.askpass(prompt="\nPress enter to begin the program.", mask="") + "Warp"
@@ -81,20 +89,23 @@ def imageProcessor(picture):
 
 def checkInformation():
 	screenshot = py.screenshot(region=(1355, 700, 20, 300))
-	screenshot.save('unprocessedCarrot.png')
+	screenshot.save('unprocessedShips.png')
 	
-	information = mpimg.imread('unprocessedCarrot.png')
-	mpimg.imsave("processedCarrot.png", imageProcessor(information))
-	img_rgb = cv2.imread('processedCarrot.png')
-	template = cv2.imread('carrot_symbol.png', 0)
-	img_gray = cv2.cvtColor(img_rgb, cv2.COLOR_BGR2GRAY)
-	res = cv2.matchTemplate(img_gray,template,cv2.TM_CCOEFF_NORMED)
+
+	information = mpimg.imread('unprocessedShips.png')
+	mpimg.imsave("processedShips.png", imageProcessor(information))
+	img_rgb = cv2.imread('processedShips.png')
 	threshold = 0.9999
-	loc = np.where(res >= threshold)
-	lists = loc[1].tolist()
-	#print(len(lists))
-	if (len(lists) > party_size):
-		return True
+	for i in range(5):
+		if (shipType[i] != '0'):
+			template = cv2.imread(images[i], 0)
+			img_gray = cv2.cvtColor(img_rgb, cv2.COLOR_BGR2GRAY)
+			res = cv2.matchTemplate(img_gray,template,cv2.TM_CCOEFF_NORMED)
+			loc = np.where(res >= threshold)
+			lists = loc[1].tolist()
+			#print(images[i],len(lists))
+			if (int(friendly[i]) < len(lists)):
+				return True
 	return False
 
 def main():
